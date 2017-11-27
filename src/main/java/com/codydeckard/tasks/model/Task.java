@@ -2,21 +2,16 @@ package com.codydeckard.tasks.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.naming.InitialContext;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.NamedQuery;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.Table;
-import javax.sql.DataSource;
 
-import org.eclipse.persistence.config.PersistenceUnitProperties;
+import com.codydeckard.tasks.db.Database;
 
 @Entity
 @Table(name="TASKS")
@@ -52,20 +47,10 @@ public class Task extends BaseObject implements Serializable {
 		newTask.setCreatedBy(user);
 		newTask.setLastModifiedBy(user);
 		
-		Map properties = new HashMap();
-		EntityManager em = null;
+		EntityManager em = Database.getEntityManager();
 
 		
 		try {
-			
-			InitialContext ctx = new InitialContext();
-			DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/DefaultDB");
-			
-			properties.put(PersistenceUnitProperties.NON_JTA_DATASOURCE, ds);
-			//properties.put("eclipselink.ddl-generation", "create-or-extend-tables");
-
-		
-			em = Persistence.createEntityManagerFactory("tasks", properties).createEntityManager();
 			
 			em.getTransaction().begin();
 		
@@ -81,33 +66,24 @@ public class Task extends BaseObject implements Serializable {
 		
 		return newTask;
 		
-		
 	}
 	
 	public String getTitle() {
 		return this.title;
 	}
+
 	@SuppressWarnings("unchecked")
 	public static List<Task> getTasks() {
+		
+		EntityManager em = Database.getEntityManager();
 
-		Map properties = new HashMap();
 
 		try {
-			
-			InitialContext ctx = new InitialContext();
-			DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/DefaultDB");
-			
-			properties.put(PersistenceUnitProperties.NON_JTA_DATASOURCE, ds);
-			//properties.put("eclipselink.ddl-generation", "create-or-extend-tables");
-
-			
-		
-			EntityManager em = Persistence.createEntityManagerFactory("tasks", properties).createEntityManager();
 		
 			Query q = em.createNamedQuery("Task.findAll");
 	
 			
-	return q.getResultList();
+			return q.getResultList();
 	} catch (Exception e) {
 			e.printStackTrace();
 			return null;
