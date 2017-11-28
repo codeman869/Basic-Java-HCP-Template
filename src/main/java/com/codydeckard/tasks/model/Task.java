@@ -79,11 +79,11 @@ public class Task extends BaseObject implements Serializable {
 
 		newTask.title = title;
 		newTask.description = description;
-		Date now = new Date();
-		newTask.setCreatedAt(now);
-		newTask.setLastModifiedAt(now);
-		newTask.setCreatedBy(user);
-		newTask.setLastModifiedBy(user);
+		//Date now = new Date();
+		//newTask.setCreatedAt(now);
+		//newTask.setLastModifiedAt(now);
+		//newTask.setCreatedBy(user);
+		//newTask.setLastModifiedBy(user);
 
 		EntityManager em = Database.getEntityManager();
 

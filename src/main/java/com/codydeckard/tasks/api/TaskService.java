@@ -16,6 +16,7 @@ import javax.ws.rs.core.SecurityContext;
 import javax.xml.ws.WebServiceContext;
 
 import com.codydeckard.tasks.model.Task;
+import com.codydeckard.tasks.services.UserManager;
 
 @Path("/tasks")
 @Produces({ MediaType.APPLICATION_JSON })
@@ -51,6 +52,8 @@ public class TaskService {
 	public Task createNewTask(@Context SecurityContext secContext, Task task) {
 		
 		String user = secContext.getUserPrincipal().getName();		
+		
+		UserManager.setCurrentUser(user);
 
 		Task newTask = Task.newTask(task.getTitle(), task.getDescription(), user);
 			
@@ -60,10 +63,14 @@ public class TaskService {
 	
 	@PATCH
 	@Path("/{id}")
-	public Response updateTask(@PathParam("id") String id, Task task) {
+	public Response updateTask(@PathParam("id") String id, @Context SecurityContext secContext, Task task) {
+		String username = secContext.getUserPrincipal().getName();
 		
+		UserManager.setCurrentUser(username);
+
 		Task modified = Task.update(id, task);
 		
+			
 		if(modified == null) {
 			return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for GUID: " + id).build();
 		}

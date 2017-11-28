@@ -11,6 +11,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.codydeckard.tasks.services.UserManager;
+
 /**
  * Base class for all domain model objects.
  */
@@ -53,7 +55,10 @@ public abstract class BaseObject {
     {
         lastModifiedAt = new Date();
         
-        // TODO - obtain currently logged-on user
+        lastModifiedBy = UserManager.getCurrentUser();
+        
+        UserManager.remove();
+        
     }
 
     /**
@@ -68,7 +73,12 @@ public abstract class BaseObject {
         createdAt = now;
         lastModifiedAt = now;
         
-        // TODO - obtain currently logged-on user
+        String user = UserManager.getCurrentUser();
+        
+        lastModifiedBy = user;
+        createdBy = user; 
+        
+        UserManager.remove();
     }
 
     public String getGUID()
