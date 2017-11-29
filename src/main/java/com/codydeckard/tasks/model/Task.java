@@ -1,7 +1,6 @@
 package com.codydeckard.tasks.model;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -41,53 +40,52 @@ public class Task extends BaseObject implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public String getDescription() {
 		return this.description;
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "unchecked" })
 	public static Task findTaskById(String guid) {
 
 		Task task = null;
 		try {
 
 			EntityManager em = Database.getEntityManager();
-			
+
 			Query q = em.createNamedQuery("Task.findById");
-			
+
 			q.setParameter("guid", guid);
-			
+
 			List<Task> tasks = q.getResultList();
-			
-			if(!tasks.isEmpty()) {
+
+			if (!tasks.isEmpty()) {
 				task = tasks.get(0);
 			}
-			
+
 			return task;
-				
-			} catch (Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 
 	}
-	@SuppressWarnings({"unchecked", "rawtypes"})
+
 	public static Task newTask(String title, String description, String user) {
 
 		Task newTask = new Task();
 
 		newTask.title = title;
 		newTask.description = description;
-		//Date now = new Date();
-		//newTask.setCreatedAt(now);
-		//newTask.setLastModifiedAt(now);
-		//newTask.setCreatedBy(user);
-		//newTask.setLastModifiedBy(user);
+		// Date now = new Date();
+		// newTask.setCreatedAt(now);
+		// newTask.setLastModifiedAt(now);
+		// newTask.setCreatedBy(user);
+		// newTask.setLastModifiedBy(user);
 
 		EntityManager em = Database.getEntityManager();
 
-		
 		try {
 
 			em.getTransaction().begin();
@@ -103,8 +101,6 @@ public class Task extends BaseObject implements Serializable {
 		}
 
 		return newTask;
-		
-
 
 	}
 
@@ -112,14 +108,13 @@ public class Task extends BaseObject implements Serializable {
 		return this.title;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	public static List<Task> getTasks() {
-		
+
 		EntityManager em = Database.getEntityManager();
 
-
 		try {
-		
+
 			Query q = em.createNamedQuery("Task.findAll");
 
 			return q.getResultList();
@@ -130,14 +125,10 @@ public class Task extends BaseObject implements Serializable {
 
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Task removeTask(String id) {
-
-		
 
 		try {
 
-			
 			EntityManager em = Database.getEntityManager();
 
 			Task task = em.find(Task.class, id);
@@ -152,7 +143,7 @@ public class Task extends BaseObject implements Serializable {
 				// }
 				//
 				em.remove(task);
-				
+
 				em.getTransaction().commit();
 
 				em.close();
@@ -167,10 +158,9 @@ public class Task extends BaseObject implements Serializable {
 		}
 
 	}
-	
+
 	public static Task update(String guid, Task task) {
-		
-		
+
 		Task modifiedTask = null;
 
 		try {
@@ -178,29 +168,30 @@ public class Task extends BaseObject implements Serializable {
 			EntityManager em = Database.getEntityManager();
 
 			modifiedTask = em.find(Task.class, guid);
-			
+
 			if (modifiedTask != null) {
 
 				String description = task.getDescription();
 				String title = task.getTitle();
 
 				em.getTransaction().begin();
-				
-				if(title != null) modifiedTask.setTitle(title);
-				if(description != null) modifiedTask.setDescription(description);
-			
+
+				if (title != null)
+					modifiedTask.setTitle(title);
+				if (description != null)
+					modifiedTask.setDescription(description);
+
 				em.getTransaction().commit();
 
 				em.close();
-				}
-			
-	} catch (Exception e) {
+			}
+
+		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 
-		
-		return modifiedTask;	
+		return modifiedTask;
 	}
 
 	@Override
